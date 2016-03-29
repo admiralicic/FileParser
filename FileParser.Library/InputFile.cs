@@ -35,14 +35,39 @@ namespace FileParser.Library
             return _filePath;
         }
 
-        public object GetFileName()
+        public string GetFileName()
         {
             return Path.GetFileNameWithoutExtension(_filePath);
         }
 
-        public object GetFileExtension()
+        public string GetFileExtension()
         {
             return Path.GetExtension(_filePath);
+        }
+
+        public void Parse(StreamWriter output)
+        {
+            try
+            {
+                var inputStream = new StreamReader(_filePath);
+
+            var lineText = inputStream.ReadLine();
+
+                do
+                {
+                    var fileLine = new FileLine(lineText, this.GetFileName(), this.GetFileExtension());
+                    var normalizedLine = fileLine.GetNormalized();
+
+                    output.WriteLine(normalizedLine);
+
+                    lineText = inputStream.ReadLine();
+
+                } while (lineText != null);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
+            }
         }
     }
 }
