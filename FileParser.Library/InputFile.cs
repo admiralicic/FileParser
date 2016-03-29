@@ -12,6 +12,7 @@ namespace FileParser.Library
     {
         private string _filePath;
         private static object _locker = new object();
+        private static bool _done;
 
         public InputFile(string filePath)
         {
@@ -68,6 +69,11 @@ namespace FileParser.Library
                     lineText = inputStream.ReadLine();
 
                 } while (lineText != null) ;
+
+                if (_done)
+                    output.Close();
+                else
+                    _done = true;
             }
             catch (Exception ex)
             {
