@@ -29,9 +29,6 @@ namespace FileParser.Tests
             _inputFileName = "inputA";
             _csvExtension = ".csv";
             _jsonExtension = ".json";
-            
-
-           
         }
 
         [Test]
