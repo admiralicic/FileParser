@@ -57,5 +57,17 @@ namespace FileParser.Tests
 
             Assert.That(actual, Is.EqualTo(expected));
         }
+
+        [Test]
+        public void NonJsonAndNonCsvLineReturnsNullDuringNormalization()
+        {
+            var line = new FileLine(_inputTextJson, _inputFileName, ".doc");
+
+            string expected = null;
+
+            var actual = line.GetNormalized();
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
     }
 }

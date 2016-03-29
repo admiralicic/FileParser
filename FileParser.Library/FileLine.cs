@@ -22,24 +22,34 @@ namespace FileParser.Library
         public string GetNormalized()
         {
             if (_fileExtension.Equals(".csv"))
-            {
                 return NormalizeCSV();
-            } else if (_fileExtension.Equals(".json"))
-            {
+            else if (_fileExtension.Equals(".json"))
                 return NormalizeJson();
-            }
 
             return null;
         }
 
         private string NormalizeCSV()
         {
-            return @"""inputA"",""cfd001"",4000,132.50";
+            return '"' + _fileName + '"' + "," + _lineText;
         }
 
         private string NormalizeJson()
         {
-            return @"""inputA"",""afa072"",3000,22.15";
+            var normalizedLine = _lineText.Substring(2, _lineText.Length - 3);
+            string[] lineSplit = normalizedLine.Split(new char[] { ':', ',' });
+
+            normalizedLine = "";
+
+            for (int i = 1; i < lineSplit.Length; i += 2)
+            {
+                normalizedLine += lineSplit[i].Trim() + ",";
+            }
+            
+            normalizedLine = normalizedLine.Substring(0, normalizedLine.Length - 1);
+            normalizedLine = '"' + _fileName + '"' + "," + normalizedLine;
+
+            return normalizedLine;
         }
     }
 }
