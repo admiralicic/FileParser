@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileParser.Library
@@ -10,6 +11,7 @@ namespace FileParser.Library
     public class InputFile
     {
         private string _filePath;
+        private static object _locker = new object();
 
         public InputFile(string filePath)
         {
@@ -23,7 +25,7 @@ namespace FileParser.Library
             }
 
             var fileExtension = Path.GetExtension(filePath);
-            
+
             if (!fileExtension.Equals(".json") && !fileExtension.Equals(".csv"))
                 throw new ArgumentException("Input file must be 'json' or 'csv'");
 
@@ -51,22 +53,26 @@ namespace FileParser.Library
             {
                 var inputStream = new StreamReader(_filePath);
 
-            var lineText = inputStream.ReadLine();
+                var lineText = inputStream.ReadLine();
 
                 do
                 {
                     var fileLine = new FileLine(lineText, this.GetFileName(), this.GetFileExtension());
                     var normalizedLine = fileLine.GetNormalized();
 
-                    output.WriteLine(normalizedLine);
+                    lock (_locker)
+                    {
+                        output.WriteLine(normalizedLine);
+                    }
 
                     lineText = inputStream.ReadLine();
 
-                } while (lineText != null);
+                } while (lineText != null) ;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Something went wrong");
+
+                throw new Exception(ex.Message);
             }
         }
     }

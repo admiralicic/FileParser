@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,9 +15,10 @@ namespace FileParser.UI
 {
     public partial class MainForm : Form
     {
-        string[] args = Environment.GetCommandLineArgs();
+        //string[] args = Environment.GetCommandLineArgs();
+        List<string> validFiles = new List<string>() { ".json", ".csv" };
 
-        //string[] args = { "PATH","inputA.csv", "inputB.json" };
+        string[] args = { "PATH","inputA.csv", "inputB.json" };
 
         public MainForm()
         {
@@ -27,20 +29,38 @@ namespace FileParser.UI
         {
             var outputFile = "output.txt";
             var outputStream = new StreamWriter(new FileStream(outputFile, FileMode.Create, FileAccess.Write));
-
-            if (args.Length != 3)
+            try
             {
-                MessageBox.Show("App requires two files as parameters", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (args.Length != 3)
+                {
+                   throw new Exception("App requires two files as parameters");
+                }
+
+                for (int i = 1; i < args.Length; i++)
+                {
+                    var file = new InputFile(args[i]);
+                    if (!validFiles.Contains(file.GetFileExtension()))
+                        throw new Exception("Input files must be valid json or csv");
+
+                    //var thread = new Thread(() => file.Parse(outputStream));
+                    //thread.Start();
+
+                   file.Parse(outputStream);
+                }
+
+                outputStream.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
-            for (int i = 1; i < args.Length; i++)
-            {
-                var file = new InputFile(args[i]);
-
-                file.Parse(outputStream);
-            }
-            
 
         }
+
+        //private void UpdateList(string line)
+        //{
+
+        //}
     }
 }
