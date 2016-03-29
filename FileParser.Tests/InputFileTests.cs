@@ -29,12 +29,6 @@ namespace FileParser.Tests
             _invalidFilePath = @"C:Test/inputA";
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-
-        }
-
         [Test]
         public void InputFileShoulHaveValidCSVFilePath()
         {
@@ -105,11 +99,7 @@ namespace FileParser.Tests
             Assert.That(actual, Is.EqualTo(expected));
         }
 
-        [Test]
-        public void Just()
-        {
-
-        }
+       
     }
 
    

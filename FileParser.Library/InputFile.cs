@@ -15,7 +15,7 @@ namespace FileParser.Library
         {
             try
             {
-                var path = Path.GetFullPath(filePath);
+                Path.GetFullPath(filePath);
             }
             catch (Exception)
             {
