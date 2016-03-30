@@ -12,7 +12,6 @@ namespace FileParser.Library
     {
         private string _filePath;
         private static object _locker = new object();
-        private static bool _done;
         private StreamReader _inputStream = null;
 
         public InputFile(string filePath)
@@ -32,7 +31,6 @@ namespace FileParser.Library
                 throw new ArgumentException("Input file must be 'json' or 'csv'");
 
             _filePath = filePath;
-            _inputStream = new StreamReader(_filePath);
         }
 
         public string GetFilePath()
@@ -52,14 +50,26 @@ namespace FileParser.Library
 
         public string ReadLine()
         {
+            if(_inputStream == null)
+                _inputStream = new StreamReader(_filePath);
+
             var lineText = _inputStream.ReadLine();
 
-            var fileLine = new FileLine(lineText, 
+            if (lineText != null)
+            {
+                var fileLine = new FileLine(lineText,
                 this.GetFileName(), this.GetFileExtension());
 
-            var normalizedLine = fileLine.GetNormalized();
+                var normalizedLine = fileLine.GetNormalized();
 
-            return normalizedLine;
+                return normalizedLine;
+            }
+            else
+            {
+                return null;
+            }
+
+            
         }
     }
 }
