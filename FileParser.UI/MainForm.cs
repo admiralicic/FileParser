@@ -23,7 +23,7 @@ namespace FileParser.UI
         private bool _done;
         List<string> validFiles = new List<string>() { ".json", ".csv" };
         List<Thread> activeThreads = new List<Thread>();
-        private int totalTime;
+        private double totalReadTime;
 
         public MainForm()
         {
@@ -65,20 +65,39 @@ namespace FileParser.UI
 
         private void ProcessFile(StreamWriter outputStream, InputFile file)
         {
+            DateTime readStartTime;
+            DateTime readEndTime;
+
             var line = string.Empty;
+
+            readStartTime = DateTime.Now;
+
             while ((line = file.ReadLine()) != null)
             {
+                readEndTime = DateTime.Now;
                 lock (_lock)
                 {
                     outputStream.WriteLine(line);
                     UpdateList(line);
-                    Thread.Sleep(100); //for testing only, remove after testing....
+                    //Thread.Sleep(10); //remove after testing....
                 }
+
+                UpdateTotalReadTime(readStartTime, readEndTime);
+
+                readStartTime = DateTime.Now;
             }
             if (_done)
+            {
+                outputStream.WriteLine(String.Format("Reading input files completed in {0}ms", totalReadTime));
                 outputStream.Close();
+            }
             else
                 _done = true;
+        }
+
+        private void UpdateTotalReadTime(DateTime readStartTime, DateTime readEndTime)
+        {
+            totalReadTime = totalReadTime + (readEndTime - readStartTime).TotalMilliseconds;
         }
 
         private void UpdateList(string line)
