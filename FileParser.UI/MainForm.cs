@@ -42,13 +42,12 @@ namespace FileParser.UI
                     if (!validFiles.Contains(file.GetFileExtension()))
                         throw new Exception("Input files must be valid json or csv");
 
-                    var thread = new Thread(() => file.ReadLine(outputStream));
-                    thread.Start();
-
-                    //file.Parse(outputStream);
+                    var line = string.Empty;
+                    while((line = file.ReadLine()) != null)
+                        outputStream.WriteLine(line);
                 }
 
-                //outputStream.Close();
+                outputStream.Close();
             }
             catch (Exception ex)
             {

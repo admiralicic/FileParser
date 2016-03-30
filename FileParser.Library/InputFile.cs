@@ -50,11 +50,13 @@ namespace FileParser.Library
             return Path.GetExtension(_filePath);
         }
 
-        public string ReadLine(StreamWriter output)
+        public string ReadLine()
         {
             var lineText = _inputStream.ReadLine();
 
-            var fileLine = new FileLine(lineText, this.GetFileName(), this.GetFileExtension());
+            var fileLine = new FileLine(lineText, 
+                this.GetFileName(), this.GetFileExtension());
+
             var normalizedLine = fileLine.GetNormalized();
 
             return normalizedLine;
