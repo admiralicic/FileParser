@@ -14,10 +14,11 @@ using System.Windows.Forms;
 namespace FileParser.UI
 {
     delegate void UpdateListCallback(string text);
+
     public partial class MainForm : Form
     {
-        //string[] args = Environment.GetCommandLineArgs();         // for production
-        string[] args = { "PATH", "inputA.csv", "inputB.json" };    // for testing
+        string[] args = Environment.GetCommandLineArgs();         // for production
+        //string[] args = { "PATH", "inputA.csv", "inputB.json" };    // for testing
         string path = Environment.CurrentDirectory;
         private object _lock = new object();
         private bool _done;
@@ -46,15 +47,17 @@ namespace FileParser.UI
                     var file = new InputFile(args[i]);
                     if (!validFiles.Contains(file.GetFileExtension()))
                         throw new Exception("Input files must be valid json or csv");
-                    Thread t = new Thread( ()=> ProcessFile(outputStream, file) );
+                    Thread t = new Thread(() => ProcessFile(outputStream, file));
                     t.Start();
-                  
-                }   
+
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+                if (outputStream != null)
+                    outputStream.Close();
 
                 Application.Exit();
             }
