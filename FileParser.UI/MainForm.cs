@@ -16,13 +16,12 @@ namespace FileParser.UI
     delegate void UpdateListCallback(string text);
     public partial class MainForm : Form
     {
-        //string[] args = Environment.GetCommandLineArgs();
-        string[] args = { "PATH", "inputA.csv", "inputB.json" };
+        //string[] args = Environment.GetCommandLineArgs();         // for production
+        string[] args = { "PATH", "inputA.csv", "inputB.json" };    // for testing
         string path = Environment.CurrentDirectory;
         private object _lock = new object();
         private bool _done;
         List<string> validFiles = new List<string>() { ".json", ".csv" };
-        List<Thread> activeThreads = new List<Thread>();
         private double totalReadTime;
 
         public MainForm()
@@ -48,7 +47,6 @@ namespace FileParser.UI
                     if (!validFiles.Contains(file.GetFileExtension()))
                         throw new Exception("Input files must be valid json or csv");
                     Thread t = new Thread( ()=> ProcessFile(outputStream, file) );
-                    activeThreads.Add(t);
                     t.Start();
                   
                 }   
